@@ -1,45 +1,79 @@
 import React, { useState, useCallback } from 'react'
+import { ThemeProvider, useTheme } from './ThemeContext'
 import StarfieldBackground from './components/StarfieldBackground'
 import LandingScene from './components/LandingScene'
-import GameScene from './components/GameScene'
+import GameSelect from './components/GameSelect'
+import StarMemory from './components/games/StarMemory'
+import CometTrace from './components/games/CometTrace'
+import LanternCatch from './components/games/LanternCatch'
+import GameBackground from './components/GameBackground'
 import UnlockSequence from './components/UnlockSequence'
 import LoveLetter from './components/LoveLetter'
-import MusicToggle from './components/MusicToggle'
+import ControlButtons from './components/ControlButtons'
 import useAudio from './hooks/useAudio'
 
-export default function App() {
-  const [scene, setScene] = useState('landing') // landing | game | unlock | letter
+function AppContent() {
+  // landing | gameSelect | starMemory | cometTrace | lanternCatch | unlock | letter
+  const [scene, setScene] = useState('landing')
   const { isPlaying, toggle } = useAudio('/music.mp3')
+  const { theme } = useTheme()
 
-  const handleBegin = useCallback(() => setScene('game'), [])
+  const handleBegin = useCallback(() => setScene('gameSelect'), [])
+  const handleGameSelect = useCallback((gameId) => setScene(gameId), [])
   const handleWin = useCallback(() => setScene('unlock'), [])
   const handleOpenLetter = useCallback(() => setScene('letter'), [])
   const handleClose = useCallback(() => setScene('landing'), [])
 
   return (
     <>
-      {/* Background gradient */}
+      {/* ── Tree background — ONLY for Unlock & Letter scenes ── */}
       <div style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 0,
-        background: scene === 'unlock' || scene === 'letter'
-          ? 'linear-gradient(180deg, #12183a 0%, #2d1b4e 40%, #432874 100%)'
-          : 'linear-gradient(180deg, #0a0e27 0%, #1a1245 40%, #2d1b4e 100%)',
-        transition: 'background 1.5s ease',
-      }} />
+        position: 'fixed', inset: 0, zIndex: 0,
+        overflow: 'hidden',
+        opacity: (scene === 'unlock' || scene === 'letter') ? 1 : 0,
+        transition: 'opacity 1s ease',
+        pointerEvents: 'none',
+      }}>
+        <img
+          src={theme === 'dark' ? '/images/tree-dark.svg' : '/images/tree.svg'}
+          alt=""
+          aria-hidden="true"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center center',
+            display: 'block',
+            transition: 'opacity 0.5s ease',
+          }}
+        />
+      </div>
 
-      {/* Three.js starfield */}
-      <StarfieldBackground scene={scene} />
+      {/* Three.js animated overlay (transparent canvas) */}
+      <StarfieldBackground scene={scene} theme={theme} />
+
+      {/* Japanese-style ambient background — visible during game scenes */}
+      {['gameSelect', 'starMemory', 'cometTrace', 'lanternCatch'].includes(scene) && <GameBackground />}
 
       {/* Scene content */}
       {scene === 'landing' && <LandingScene onBegin={handleBegin} />}
-      {scene === 'game' && <GameScene onWin={handleWin} />}
+      {scene === 'gameSelect' && <GameSelect onSelect={handleGameSelect} />}
+      {scene === 'starMemory' && <StarMemory onWin={handleWin} />}
+      {scene === 'cometTrace' && <CometTrace onWin={handleWin} />}
+      {scene === 'lanternCatch' && <LanternCatch onWin={handleWin} />}
       {scene === 'unlock' && <UnlockSequence onComplete={handleOpenLetter} />}
       {scene === 'letter' && <LoveLetter onClose={handleClose} />}
 
-      {/* Music toggle — always visible */}
-      <MusicToggle isPlaying={isPlaying} onToggle={toggle} />
+      {/* Control buttons — always visible */}
+      <ControlButtons isPlaying={isPlaying} onToggle={toggle} />
     </>
+  )
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   )
 }

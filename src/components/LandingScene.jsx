@@ -1,188 +1,229 @@
-import React, { useEffect, useRef, useMemo } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
+import { useTheme } from '../ThemeContext'
+import Snowfall from './Snowfall'
 
 export default function LandingScene({ onBegin }) {
     const containerRef = useRef(null)
     const hasAnimated = useRef(false)
+    const { theme } = useTheme()
 
-    /* Generate snowflakes once */
-    const snowflakes = useMemo(() => {
-        return Array.from({ length: 60 }, (_, i) => ({
-            id: i,
-            left: `${Math.random() * 100}%`,
-            animDuration: `${Math.random() * 8 + 6}s`,
-            animDelay: `${Math.random() * 10}s`,
-            fontSize: `${Math.random() * 0.6 + 0.4}em`,
-            opacity: Math.random() * 0.6 + 0.2,
-        }))
-    }, [])
 
+
+    /* GSAP entrance */
     useEffect(() => {
         if (!containerRef.current || hasAnimated.current) return
         hasAnimated.current = true
 
-        const els = containerRef.current
-        const tl = gsap.timeline()
+        const el = containerRef.current
+        gsap.set(el, { opacity: 0 })
+        gsap.set(el.querySelectorAll('.land-text-block, .land-image-wrap'), { opacity: 0 })
+        gsap.set(el.querySelector('.land-text-block'), { x: -40 })
+        gsap.set(el.querySelector('.land-image-wrap'), { x: 40 })
 
-        gsap.set(els, { opacity: 0 })
-        gsap.set(els.querySelectorAll('.land-title, .land-subtitle, .land-btn, .land-scene'), { opacity: 0, y: 30 })
-
-        tl.to(els, { opacity: 1, duration: 1 })
-            .to(els.querySelector('.land-scene'), { opacity: 1, y: 0, duration: 1.5, ease: 'power2.out' }, 0.3)
-            .to(els.querySelector('.land-title'), { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' }, 0.8)
-            .to(els.querySelector('.land-subtitle'), { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, 1.3)
-            .to(els.querySelector('.land-btn'), { opacity: 1, y: 0, duration: 0.8, ease: 'back.out(1.7)' }, 1.8)
+        gsap.timeline()
+            .to(el, { opacity: 1, duration: 1.5 })
+            .to(el.querySelector('.land-image-wrap'), { opacity: 1, x: 0, duration: 2, ease: 'power3.out' }, 0.4)
+            .to(el.querySelector('.land-text-block'), { opacity: 1, x: 0, duration: 1.8, ease: 'power3.out' }, 0.6)
     }, [])
 
-    const handleBegin = () => {
+    /* Click-anywhere → transition */
+    const handleClick = () => {
         const overlay = document.createElement('div')
-        overlay.style.cssText = 'position:fixed;inset:0;background:white;z-index:999;opacity:0;pointer-events:none;'
+        overlay.style.cssText = `
+      position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0;
+      background: radial-gradient(ellipse at center,
+        rgba(255,255,255,0.85) 0%, rgba(200,180,230,0.4) 50%, transparent 100%);
+    `
         document.body.appendChild(overlay)
 
         gsap.timeline()
-            .to(overlay, { opacity: 0.8, duration: 0.3, ease: 'power2.in' })
-            .to(overlay, { opacity: 0, duration: 0.5, ease: 'power2.out' })
-            .to(containerRef.current, { opacity: 0, duration: 0.3 }, 0.3)
-            .call(() => {
-                overlay.remove()
-                onBegin()
-            })
+            .to(overlay, { opacity: 1, duration: 0.5, ease: 'power2.in' })
+            .to(containerRef.current, { opacity: 0, duration: 0.6, ease: 'power2.in' }, 0.2)
+            .to(overlay, { opacity: 0, duration: 0.7, ease: 'power2.out' }, 0.7)
+            .call(() => { overlay.remove(); onBegin() })
     }
 
     return (
-        <div ref={containerRef} style={{ position: 'fixed', inset: 0, zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            {/* Gradient overlay */}
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(10,14,39,0.3) 0%, rgba(26,18,69,0.5) 50%, rgba(45,27,78,0.7) 100%)', zIndex: 1 }} />
+        <div
+            ref={containerRef}
+            onClick={handleClick}
+            style={{
+                position: 'fixed', inset: 0, zIndex: 2, cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden',
+            }}
+        >
+            {/* Snowfall */}
+            <Snowfall />
 
-            {/* Snow */}
-            {snowflakes.map(s => (
-                <div key={s.id} className="snowflake" style={{ left: s.left, animationDuration: s.animDuration, animationDelay: s.animDelay, fontSize: s.fontSize }}>
-                    ❄
-                </div>
-            ))}
+            {/* ═══ LEFT: Text Content ═══ */}
+            <div className="land-text-block" style={{
+                flex: '0 1 480px',
+                zIndex: 5,
+                padding: 'clamp(24px, 4vw, 60px)',
+                paddingRight: 'clamp(16px, 3vw, 40px)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0',
+            }}>
+                {/* Decorative line */}
+                <div style={{
+                    width: '40px', height: '2px', marginBottom: '20px',
+                    background: 'var(--accent-line)',
+                    borderRadius: '2px',
+                }} />
 
-            {/* Scene illustration */}
-            <div className="land-scene" style={{ position: 'relative', zIndex: 3, marginBottom: '24px' }}>
-                <svg width="340" height="220" viewBox="0 0 340 220" style={{ maxWidth: '85vw' }}>
-                    {/* Hill / ground */}
-                    <ellipse cx="170" cy="210" rx="200" ry="45" fill="rgba(20,16,50,0.8)" />
-                    <ellipse cx="170" cy="210" rx="195" ry="40" fill="rgba(30,24,65,0.6)" />
-
-                    {/* Deer 1 */}
-                    <g transform="translate(70, 145)" opacity="0.8">
-                        <ellipse cx="0" cy="0" rx="14" ry="9" fill="#1a1540" /> {/* body */}
-                        <ellipse cx="-12" cy="-7" rx="5" ry="4" fill="#1a1540" /> {/* head */}
-                        <line x1="-7" y1="7" x2="-9" y2="21" stroke="#1a1540" strokeWidth="2.5" />
-                        <line x1="5" y1="7" x2="3" y2="21" stroke="#1a1540" strokeWidth="2.5" />
-                        <line x1="-14" y1="-10" x2="-18" y2="-22" stroke="#1a1540" strokeWidth="1.5" /> {/* antler */}
-                        <line x1="-16" y1="-16" x2="-21" y2="-20" stroke="#1a1540" strokeWidth="1.2" />
-                        <line x1="-11" y1="-10" x2="-8" y2="-21" stroke="#1a1540" strokeWidth="1.5" />
-                        <line x1="-10" y1="-16" x2="-5" y2="-19" stroke="#1a1540" strokeWidth="1.2" />
-                    </g>
-
-                    {/* Deer 2 */}
-                    <g transform="translate(115, 155)" opacity="0.7">
-                        <ellipse cx="0" cy="0" rx="11" ry="7" fill="#1a1540" />
-                        <ellipse cx="10" cy="-5" rx="4" ry="3.5" fill="#1a1540" />
-                        <line x1="-5" y1="5" x2="-7" y2="17" stroke="#1a1540" strokeWidth="2" />
-                        <line x1="4" y1="5" x2="3" y2="17" stroke="#1a1540" strokeWidth="2" />
-                    </g>
-
-                    {/* Figure 1 (taller) */}
-                    <g transform="translate(210, 125)">
-                        <circle cx="0" cy="0" r="9" fill="#0f0d2e" /> {/* head */}
-                        <path d="M-8,8 Q-10,35 -6,55 L6,55 Q10,35 8,8 Z" fill="#0f0d2e" /> {/* body */}
-                        <line x1="-6" y1="55" x2="-8" y2="75" stroke="#0f0d2e" strokeWidth="4" strokeLinecap="round" />
-                        <line x1="6" y1="55" x2="8" y2="75" stroke="#0f0d2e" strokeWidth="4" strokeLinecap="round" />
-                        {/* scarf detail */}
-                        <path d="M-8,12 Q0,17 8,12" stroke="rgba(77,208,225,0.3)" strokeWidth="2" fill="none" />
-                    </g>
-
-                    {/* Figure 2 (shorter) */}
-                    <g transform="translate(235, 135)">
-                        <circle cx="0" cy="0" r="8" fill="#0f0d2e" />
-                        <path d="M-7,7 Q-9,30 -5,48 L5,48 Q9,30 7,7 Z" fill="#0f0d2e" />
-                        {/* flowing hair detail */}
-                        <path d="M5,-2 Q12,5 10,12" stroke="#0f0d2e" strokeWidth="3" fill="none" />
-                        <line x1="-5" y1="48" x2="-7" y2="65" stroke="#0f0d2e" strokeWidth="3.5" strokeLinecap="round" />
-                        <line x1="5" y1="48" x2="7" y2="65" stroke="#0f0d2e" strokeWidth="3.5" strokeLinecap="round" />
-                        {/* scarf detail */}
-                        <path d="M-7,10 Q0,14 7,10" stroke="rgba(255,179,217,0.3)" strokeWidth="2" fill="none" />
-                    </g>
-
-                    {/* Soft glow around figures */}
-                    <defs>
-                        <radialGradient id="figureGlow">
-                            <stop offset="0%" stopColor="rgba(77,208,225,0.15)" />
-                            <stop offset="100%" stopColor="transparent" />
-                        </radialGradient>
-                    </defs>
-                    <circle cx="222" cy="160" r="60" fill="url(#figureGlow)" />
-                </svg>
-            </div>
-
-            {/* Text content */}
-            <div style={{ position: 'relative', zIndex: 4, textAlign: 'center', padding: '0 24px' }}>
-                <h1 className="land-title" style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: 'clamp(2rem, 6vw, 3.5rem)',
-                    fontWeight: 600,
-                    color: 'var(--text-primary)',
-                    marginBottom: '12px',
-                    letterSpacing: '0.02em',
-                    textShadow: '0 0 40px rgba(77,208,225,0.3), 0 2px 10px rgba(0,0,0,0.5)',
+                {/* Title */}
+                <h1 style={{
+                    fontFamily: "'Dancing Script', cursive",
+                    fontSize: 'clamp(2.4rem, 6vw, 3.8rem)',
+                    fontWeight: 700,
+                    color: 'var(--text-heading)',
+                    marginBottom: '16px',
+                    lineHeight: 1.15,
+                    textShadow: `0 0 40px var(--accent-glow), 0 2px 10px rgba(0,0,0,0.3)`,
                 }}>
-                    A Moment Across Time
+                    For You, Tanvi
                 </h1>
 
-                <p className="land-subtitle" style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 'clamp(0.9rem, 2.5vw, 1.15rem)',
-                    color: 'var(--text-secondary)',
+                {/* Description */}
+                <p style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 'clamp(0.82rem, 1.5vw, 0.95rem)',
+                    color: 'var(--text-body)',
                     fontWeight: 300,
-                    letterSpacing: '0.05em',
-                    marginBottom: '36px',
-                    fontStyle: 'italic',
+                    lineHeight: 1.8,
+                    marginBottom: '16px',
+                    maxWidth: '400px',
                 }}>
-                    Can you catch what slips away?
+                    Some people walk into your life and everything just feels
+                    different - the sky looks more vivid, the quiet moments
+                    feel warmer, and even time seems to slow down.
                 </p>
 
-                <button
-                    className="land-btn"
-                    id="begin-button"
-                    onClick={handleBegin}
+                <p style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 'clamp(0.78rem, 1.4vw, 0.9rem)',
+                    color: 'var(--text-muted)',
+                    fontWeight: 300,
+                    lineHeight: 1.75,
+                    marginBottom: '30px',
+                    maxWidth: '380px',
+                    fontStyle: 'italic',
+                }}>
+                    I built this little world for you. Catch the falling hearts,
+                    unlock a letter written across time, and find something
+                    that's meant only for you.
+                </p>
+
+                {/* Divider */}
+                <div style={{
+                    width: '30px', height: '1px', marginBottom: '20px',
+                    background: 'var(--divider)',
+                }} />
+
+                {/* Tagline */}
+                <p style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: 'clamp(0.6rem, 1.2vw, 0.75rem)',
+                    color: 'var(--text-subtle)',
+                    fontWeight: 300,
+                    letterSpacing: '0.2em',
+                    textTransform: 'uppercase',
+                    marginBottom: '16px',
+                }}>
+                    A moment across time
+                </p>
+
+                {/* CTA */}
+                <p style={{
+                    fontFamily: "'Dancing Script', cursive",
+                    fontSize: 'clamp(0.9rem, 2vw, 1.1rem)',
+                    color: 'var(--text-accent)',
+                    fontWeight: 400,
+                    letterSpacing: '0.04em',
+                    animation: 'gentlePulse 3s ease-in-out infinite',
+                }}>
+                    ✦ touch the sky to begin ✦
+                </p>
+            </div>
+
+            {/* ═══ RIGHT: Image with premium blend ═══ */}
+            <div className="land-image-wrap" style={{
+                flex: '1 1 55%',
+                height: '100%',
+                position: 'relative',
+                zIndex: 3,
+            }}>
+                {/* Feathered left edge — seamless blend from text to image */}
+                <div style={{
+                    position: 'absolute',
+                    top: 0, bottom: 0, left: 0,
+                    width: 'clamp(80px, 12vw, 200px)',
+                    background: `linear-gradient(to right, var(--feather-left), transparent)`,
+                    zIndex: 2,
+                    pointerEvents: 'none',
+                }} />
+
+                {/* Top and bottom feather */}
+                <div style={{
+                    position: 'absolute', top: 0, left: 0, right: 0, height: '15%',
+                    background: `linear-gradient(to bottom, var(--feather-top), transparent)`,
+                    zIndex: 2, pointerEvents: 'none',
+                }} />
+                <div style={{
+                    position: 'absolute', bottom: 0, left: 0, right: 0, height: '20%',
+                    background: `linear-gradient(to top, var(--feather-bottom), transparent)`,
+                    zIndex: 2, pointerEvents: 'none',
+                }} />
+
+                {/* The image itself */}
+                <img
+                    src="/images/landing-bg.jpeg"
+                    alt="A twilight scene — two silhouettes under a starlit sky"
                     style={{
-                        fontFamily: 'var(--font-display)',
-                        fontSize: '1.1rem',
-                        fontWeight: 600,
-                        padding: '14px 48px',
-                        borderRadius: '50px',
-                        border: '1px solid rgba(77,208,225,0.3)',
-                        background: 'linear-gradient(135deg, rgba(77,208,225,0.15), rgba(45,27,78,0.4))',
-                        color: 'var(--text-primary)',
-                        cursor: 'pointer',
-                        letterSpacing: '0.1em',
-                        transition: 'all 0.4s ease',
-                        boxShadow: '0 0 30px rgba(77,208,225,0.15), 0 4px 15px rgba(0,0,0,0.3)',
-                        textTransform: 'uppercase',
+                        display: 'block',
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'center center',
                     }}
-                    onMouseEnter={e => {
-                        e.currentTarget.style.boxShadow = '0 0 50px rgba(77,208,225,0.3), 0 8px 25px rgba(0,0,0,0.4)'
-                        e.currentTarget.style.transform = 'translateY(-3px)'
-                        e.currentTarget.style.borderColor = 'rgba(77,208,225,0.5)'
-                    }}
-                    onMouseLeave={e => {
-                        e.currentTarget.style.boxShadow = '0 0 30px rgba(77,208,225,0.15), 0 4px 15px rgba(0,0,0,0.3)'
-                        e.currentTarget.style.transform = 'translateY(0)'
-                        e.currentTarget.style.borderColor = 'rgba(77,208,225,0.3)'
-                    }}
-                >
-                    Begin
-                </button>
+                />
+
+                {/* Soft color overlay for cohesion */}
+                <div style={{
+                    position: 'absolute', inset: 0,
+                    background: 'var(--img-overlay)',
+                    zIndex: 1, pointerEvents: 'none',
+                }} />
             </div>
 
             {/* Vignette */}
             <div className="vignette" />
+
+            {/* ═══ Responsive ═══ */}
+            <style>{`
+        @media (max-width: 768px) {
+          .land-text-block {
+            position: absolute !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            z-index: 8 !important;
+            padding: 24px 20px 36px !important;
+            background: var(--mobile-text-bg) !important;
+            text-align: center !important;
+            align-items: center !important;
+            flex: unset !important;
+          }
+          .land-image-wrap {
+            position: absolute !important;
+            inset: 0 !important;
+            flex: unset !important;
+          }
+        }
+      `}</style>
         </div>
     )
 }

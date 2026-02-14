@@ -1,7 +1,43 @@
 @import "tailwindcss";
 
-/* ── Shinkai Twilight Design Tokens ── */
-:root {
+/* ── Theme Variables ── */
+
+/* Dark Theme (default) */
+:root,
+[data-theme="dark"] {
+  --bg-primary: #0a0e27;
+  --bg-overlay: rgba(7, 11, 26, 0.55);
+  --bg-overlay-strong: rgba(7, 11, 26, 0.8);
+
+  --text-heading: #f0edf6;
+  --text-body: rgba(232, 234, 246, 0.6);
+  --text-muted: rgba(232, 234, 246, 0.45);
+  --text-subtle: rgba(232, 234, 246, 0.35);
+  --text-accent: rgba(255, 200, 140, 0.6);
+  --accent-glow: rgba(77, 208, 225, 0.25);
+  --accent-line: linear-gradient(90deg, rgba(77, 208, 225, 0.6), rgba(255, 183, 77, 0.4));
+  --divider: rgba(255, 255, 255, 0.12);
+  --mobile-text-bg: linear-gradient(to top, rgba(7, 11, 26, 0.95) 0%, rgba(7, 11, 26, 0.7) 60%, transparent 100%);
+  --feather-left: #0d1137;
+  --feather-top: rgba(7, 11, 26, 0.7);
+  --feather-bottom: rgba(7, 11, 26, 0.8);
+  --img-overlay: linear-gradient(135deg, rgba(13, 17, 55, 0.15) 0%, transparent 40%, rgba(45, 27, 78, 0.1) 100%);
+
+  --snow-color-1: rgba(255, 255, 255, 1);
+  --snow-color-2: rgba(200, 220, 255, 1);
+  --snow-glow-1: rgba(255, 255, 255, 0.6);
+  --snow-glow-2: rgba(200, 220, 255, 0.4);
+
+  --vignette-color: rgba(10, 14, 39, 0.6);
+  --starfield-alpha: 1.0;
+
+  /* Glass */
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-text: #e8eaf6;
+  --glass-hover: rgba(255, 255, 255, 0.15);
+
+  /* Design tokens (unchanged) */
   --deep-navy: #0a0e27;
   --dark-indigo: #12183a;
   --midnight-purple: #1a1245;
@@ -20,26 +56,63 @@
   --paper-edge: #e8dcc8;
   --text-primary: #e8eaf6;
   --text-secondary: rgba(232, 234, 246, 0.7);
-  --glass-bg: rgba(255, 255, 255, 0.08);
-  --glass-border: rgba(255, 255, 255, 0.15);
 
   --font-display: 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', system-ui, sans-serif;
   --font-script: 'Dancing Script', cursive;
 }
 
+/* Light Theme */
+[data-theme="light"] {
+  --bg-primary: #f8f0f0;
+  --bg-overlay: rgba(255, 245, 245, 0.4);
+  --bg-overlay-strong: rgba(255, 245, 245, 0.7);
+
+  --text-heading: #3e2723;
+  --text-body: rgba(62, 39, 35, 0.7);
+  --text-muted: rgba(62, 39, 35, 0.55);
+  --text-subtle: rgba(62, 39, 35, 0.4);
+  --text-accent: rgba(180, 80, 100, 0.7);
+  --accent-glow: rgba(180, 80, 100, 0.2);
+  --accent-line: linear-gradient(90deg, rgba(255, 150, 180, 0.6), rgba(168, 216, 234, 0.5));
+  --divider: rgba(62, 39, 35, 0.12);
+  --mobile-text-bg: linear-gradient(to top, rgba(255, 245, 245, 0.95) 0%, rgba(255, 245, 245, 0.7) 60%, transparent 100%);
+  --feather-left: #f8f0f0;
+  --feather-top: rgba(248, 240, 240, 0.7);
+  --feather-bottom: rgba(248, 240, 240, 0.8);
+  --img-overlay: linear-gradient(135deg, rgba(248, 240, 240, 0.15) 0%, transparent 40%, rgba(255, 220, 230, 0.1) 100%);
+
+  --snow-color-1: rgba(255, 128, 179, 1);
+  --snow-color-2: rgba(100, 181, 246, 1);
+  --snow-glow-1: rgba(255, 128, 179, 0.5);
+  --snow-glow-2: rgba(100, 181, 246, 0.4);
+
+  --vignette-color: rgba(248, 240, 240, 0.3);
+  --starfield-alpha: 0.15;
+
+  /* Glass — darker for light bg */
+  --glass-bg: rgba(0, 0, 0, 0.06);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-text: #3e2723;
+  --glass-hover: rgba(0, 0, 0, 0.1);
+}
+
 /* ── Reset ── */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: var(--deep-navy);
+  background: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
@@ -64,23 +137,62 @@ html, body, #root {
     transform: translateY(-10px) rotate(0deg) translateX(0px);
     opacity: 0;
   }
+
   10% {
     opacity: 0.8;
   }
+
   90% {
     opacity: 0.6;
   }
+
   100% {
     transform: translateY(100vh) rotate(360deg) translateX(60px);
     opacity: 0;
   }
 }
 
+/* Enhanced snowfall with horizontal sway */
+@keyframes snowfallSway {
+  0% {
+    transform: translateY(-10px) rotate(0deg) translateX(0px);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: var(--snow-opacity, 0.8);
+  }
+
+  25% {
+    transform: translateY(25vh) rotate(90deg) translateX(var(--sway-1, 15px));
+  }
+
+  50% {
+    transform: translateY(50vh) rotate(180deg) translateX(var(--sway-2, -10px));
+  }
+
+  75% {
+    transform: translateY(75vh) rotate(270deg) translateX(var(--sway-3, 20px));
+  }
+
+  90% {
+    opacity: var(--snow-opacity-end, 0.5);
+  }
+
+  100% {
+    transform: translateY(105vh) rotate(360deg) translateX(var(--sway-4, 5px));
+    opacity: 0;
+  }
+}
+
 /* ── Heart Float ── */
 @keyframes heartFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-12px);
   }
@@ -92,12 +204,15 @@ html, body, #root {
     transform: translateY(-20px) rotate(0deg) translateX(0px);
     opacity: 0;
   }
+
   5% {
     opacity: 1;
   }
+
   85% {
     opacity: 0.8;
   }
+
   100% {
     transform: translateY(105vh) rotate(720deg) translateX(var(--drift, 40px));
     opacity: 0;
@@ -106,21 +221,38 @@ html, body, #root {
 
 /* ── Star Twinkle ── */
 @keyframes twinkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
+  }
 }
 
 /* ── Gentle Pulse ── */
 @keyframes gentlePulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.03);
+  }
 }
 
 /* ── Letter Glow ── */
 @keyframes letterGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     text-shadow: 0 0 20px rgba(255, 179, 217, 0.4), 0 0 40px rgba(255, 179, 217, 0.2);
   }
+
   50% {
     text-shadow: 0 0 30px rgba(255, 179, 217, 0.6), 0 0 60px rgba(255, 179, 217, 0.3);
   }
@@ -141,9 +273,19 @@ html, body, #root {
   inset: 0;
   pointer-events: none;
   z-index: 8;
-  background: radial-gradient(ellipse at center, transparent 50%, rgba(10, 14, 39, 0.6) 100%);
+  background: radial-gradient(ellipse at center, transparent 50%, var(--vignette-color) 100%);
 }
 
 /* ── Scrollbar hide ── */
-::-webkit-scrollbar { display: none; }
-* { scrollbar-width: none; }
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
+}
+
+/* ── Theme transition for smooth switching ── */
+html {
+  transition: background-color 0.6s ease;
+}

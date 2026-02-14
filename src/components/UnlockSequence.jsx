@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-import SakuraTree, { SakuraPetals } from './SakuraTree'
+import { SakuraPetals } from './SakuraTree'
 
 export default function UnlockSequence({ onComplete }) {
     const containerRef = useRef(null)
-    const treeRef = useRef(null)
     const envelopeRef = useRef(null)
     const flashRef = useRef(null)
     const burstRef = useRef(null)
@@ -31,12 +30,7 @@ export default function UnlockSequence({ onComplete }) {
         tl.fromTo(burstRef.current, { scale: 0 }, { scale: 1, duration: 0.8, ease: 'power2.out' }, 1.0)
             .to(burstRef.current, { opacity: 0, duration: 0.5 }, 1.6)
 
-        /* 1.2s – Tree rises from bottom */
-        tl.fromTo(treeRef.current,
-            { y: 200, opacity: 0, scale: 0.8 },
-            { y: 0, opacity: 1, scale: 1, duration: 1.5, ease: 'power2.out' },
-            1.2
-        )
+
 
         /* 2.5s – Envelope appears */
         tl.fromTo(envelopeRef.current,
@@ -95,17 +89,7 @@ export default function UnlockSequence({ onComplete }) {
             {/* Sakura petals (begin falling during sequence) */}
             <SakuraPetals count={100} />
 
-            {/* Sakura tree */}
-            <div ref={treeRef} style={{
-                position: 'absolute',
-                bottom: '-20px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                zIndex: 3,
-                opacity: 0,
-            }}>
-                <SakuraTree />
-            </div>
+
 
             {/* Envelope */}
             <div

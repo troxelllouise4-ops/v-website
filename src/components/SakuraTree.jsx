@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useMemo } from 'react'
-import { gsap } from 'gsap'
+import React, { useMemo } from 'react'
 
 export default function SakuraTree() {
     return (
@@ -49,7 +48,97 @@ export default function SakuraTree() {
     )
 }
 
-/* ── Sakura Petals ── */
+/* ── Realistic Cherry Blossom Petal SVGs ── */
+
+/* Petal shape 1: Full 5-petal cherry blossom */
+function BlossomFull({ size, gradientId }) {
+    return (
+        <svg viewBox="0 0 24 24" width={size} height={size}>
+            <defs>
+                <radialGradient id={gradientId} cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#fff0f5" stopOpacity="0.9" />
+                    <stop offset="40%" stopColor="#ffd6ec" stopOpacity="0.85" />
+                    <stop offset="100%" stopColor="#ffb3d9" stopOpacity="0.7" />
+                </radialGradient>
+            </defs>
+            {/* 5 petals arranged radially */}
+            <g fill={`url(#${gradientId})`}>
+                <ellipse cx="12" cy="5" rx="3.5" ry="5" />
+                <ellipse cx="18.5" cy="9.5" rx="3.5" ry="5" transform="rotate(72, 18.5, 9.5)" />
+                <ellipse cx="16.5" cy="17" rx="3.5" ry="5" transform="rotate(144, 16.5, 17)" />
+                <ellipse cx="7.5" cy="17" rx="3.5" ry="5" transform="rotate(216, 7.5, 17)" />
+                <ellipse cx="5.5" cy="9.5" rx="3.5" ry="5" transform="rotate(288, 5.5, 9.5)" />
+            </g>
+            {/* Center pistil */}
+            <circle cx="12" cy="12" r="2" fill="#f8bbd0" opacity="0.8" />
+            <circle cx="12" cy="12" r="1" fill="#f48fb1" opacity="0.6" />
+        </svg>
+    )
+}
+
+/* Petal shape 2: Single elongated petal with vein */
+function PetalSingle({ size, gradientId }) {
+    return (
+        <svg viewBox="0 0 16 24" width={size * 0.7} height={size}>
+            <defs>
+                <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#ffd6ec" stopOpacity="0.9" />
+                    <stop offset="50%" stopColor="#ffb3d9" stopOpacity="0.85" />
+                    <stop offset="100%" stopColor="#f8bbd0" stopOpacity="0.7" />
+                </linearGradient>
+            </defs>
+            <path
+                d="M8 1 C4 4, 1 9, 1 14 C1 19, 4 23, 8 23 C12 23, 15 19, 15 14 C15 9, 12 4, 8 1 Z"
+                fill={`url(#${gradientId})`}
+            />
+            {/* Central vein */}
+            <path
+                d="M8 3 Q8 12, 8 21"
+                fill="none"
+                stroke="#f8bbd0"
+                strokeWidth="0.4"
+                opacity="0.5"
+            />
+            {/* Side veins */}
+            <path d="M8 8 Q5 10, 3 12" fill="none" stroke="#f8bbd0" strokeWidth="0.3" opacity="0.3" />
+            <path d="M8 8 Q11 10, 13 12" fill="none" stroke="#f8bbd0" strokeWidth="0.3" opacity="0.3" />
+            <path d="M8 13 Q5 15, 3 17" fill="none" stroke="#f8bbd0" strokeWidth="0.3" opacity="0.3" />
+            <path d="M8 13 Q11 15, 13 17" fill="none" stroke="#f8bbd0" strokeWidth="0.3" opacity="0.3" />
+        </svg>
+    )
+}
+
+/* Petal shape 3: Two-petal cluster (half-open bud) */
+function PetalPair({ size, gradientId }) {
+    return (
+        <svg viewBox="0 0 22 20" width={size} height={size * 0.9}>
+            <defs>
+                <linearGradient id={`${gradientId}a`} x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#fff0f5" stopOpacity="0.9" />
+                    <stop offset="100%" stopColor="#ffb3d9" stopOpacity="0.75" />
+                </linearGradient>
+                <linearGradient id={`${gradientId}b`} x1="100%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="#ffd6ec" stopOpacity="0.85" />
+                    <stop offset="100%" stopColor="#f8bbd0" stopOpacity="0.7" />
+                </linearGradient>
+            </defs>
+            {/* Left petal */}
+            <path
+                d="M11 18 C7 16, 1 12, 1 7 C1 3, 5 1, 9 4 C10 5, 11 6, 11 8 Z"
+                fill={`url(#${gradientId}a)`}
+            />
+            {/* Right petal */}
+            <path
+                d="M11 18 C15 16, 21 12, 21 7 C21 3, 17 1, 13 4 C12 5, 11 6, 11 8 Z"
+                fill={`url(#${gradientId}b)`}
+            />
+            {/* Center */}
+            <circle cx="11" cy="8" r="1.2" fill="#f48fb1" opacity="0.5" />
+        </svg>
+    )
+}
+
+/* ── Sakura Petals — uses 3 realistic petal shapes ── */
 export function SakuraPetals({ count = 100 }) {
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
     const actualCount = isMobile ? Math.floor(count / 2) : count
@@ -64,40 +153,37 @@ export function SakuraPetals({ count = 100 }) {
             drift: `${(Math.random() - 0.5) * 80}px`,
             rotation: Math.random() * 720,
             opacity: Math.random() * 0.4 + 0.5,
+            shape: Math.floor(Math.random() * 3), // 0=full, 1=single, 2=pair
         }))
     }, [actualCount])
 
     return (
         <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 6, overflow: 'hidden' }}>
-            {petals.map(p => (
-                <div
-                    key={p.id}
-                    style={{
-                        position: 'absolute',
-                        left: p.left,
-                        top: '-20px',
-                        width: `${p.size}px`,
-                        height: `${p.size}px`,
-                        opacity: p.opacity,
-                        animation: `petalFall ${p.duration} ${p.delay} linear infinite`,
-                        '--drift': p.drift,
-                    }}
-                >
-                    <svg viewBox="0 0 20 20" width={p.size} height={p.size}>
-                        <defs>
-                            <linearGradient id={`pg${p.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#ffd6ec" />
-                                <stop offset="100%" stopColor="#ffb3d9" />
-                            </linearGradient>
-                        </defs>
-                        <path
-                            d="M10 2 C8 0, 3 1, 2 5 C1 9, 5 13, 10 18 C15 13, 19 9, 18 5 C17 1, 12 0, 10 2 Z"
-                            fill={`url(#pg${p.id})`}
-                            opacity="0.85"
-                        />
-                    </svg>
-                </div>
-            ))}
+            {petals.map(p => {
+                const gradientId = `pg${p.id}`
+                let PetalComponent
+                if (p.shape === 0) PetalComponent = <BlossomFull size={p.size} gradientId={gradientId} />
+                else if (p.shape === 1) PetalComponent = <PetalSingle size={p.size} gradientId={gradientId} />
+                else PetalComponent = <PetalPair size={p.size} gradientId={gradientId} />
+
+                return (
+                    <div
+                        key={p.id}
+                        style={{
+                            position: 'absolute',
+                            left: p.left,
+                            top: '-20px',
+                            width: `${p.size}px`,
+                            height: `${p.size}px`,
+                            opacity: p.opacity,
+                            animation: `petalFall ${p.duration} ${p.delay} linear infinite`,
+                            '--drift': p.drift,
+                        }}
+                    >
+                        {PetalComponent}
+                    </div>
+                )
+            })}
         </div>
     )
 }

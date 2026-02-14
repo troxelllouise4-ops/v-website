@@ -47,9 +47,7 @@ export default function LoveLetter({ onClose }) {
         <div ref={overlayRef} style={{
             position: 'fixed', inset: 0, zIndex: 30,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: 'rgba(10,14,39,0.85)',
-            backdropFilter: 'blur(8px)',
-            WebkitBackdropFilter: 'blur(8px)',
+            background: 'transparent',
         }} onClick={handleClose}>
             {/* Ambient petals */}
             <SakuraPetals count={25} />
@@ -120,14 +118,14 @@ export default function LoveLetter({ onClose }) {
                     {/* Letter content */}
                     <div style={{
                         position: 'relative',
-                        fontFamily: 'var(--font-display)',
+                        fontFamily: "'Dancing Script', cursive",
                         color: '#3e3228',
-                        lineHeight: 1.9,
-                        fontSize: 'clamp(0.85rem, 2.2vw, 1.02rem)',
+                        lineHeight: 1.6,
+                        fontSize: 'clamp(1.1rem, 2.8vw, 1.4rem)',
                     }}>
                         {/* Salutation */}
                         <p style={{
-                            fontFamily: 'var(--font-script)',
+                            fontFamily: "inherit",
                             fontSize: 'clamp(1.5rem, 4vw, 2rem)',
                             color: '#5a3e34',
                             marginBottom: '24px',
