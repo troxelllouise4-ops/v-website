@@ -14,7 +14,7 @@ import useAudio from './hooks/useAudio'
 
 function AppContent() {
   // landing | gameSelect | starMemory | cometTrace | lanternCatch | unlock | letter
-  console.log("Version: Visuals Restored + Fixed Paths (Date: 2026-02-14)") // Debug log to confirm deployment
+  console.log("Version: Visuals Fixed (Stars Removed) (Date: 2026-02-14)") // Debug log to confirm deployment
   const [scene, setScene] = useState('landing')
   const { isPlaying, toggle } = useAudio('music.mp3')
   const { theme } = useTheme()
@@ -51,8 +51,8 @@ function AppContent() {
         />
       </div>
 
-      {/* Three.js animated overlay (transparent canvas) */}
-      <StarfieldBackground scene={scene} theme={theme} />
+      {/* Three.js animated overlay REMOVED per user request */}
+      {/* <StarfieldBackground scene={scene} theme={theme} /> */}
 
       {/* Japanese-style ambient background — visible during game scenes */}{/* REMOVED per user request for "old website" */}
       {/* {['gameSelect', 'starMemory', 'cometTrace', 'lanternCatch'].includes(scene) && <GameBackground />} */}
