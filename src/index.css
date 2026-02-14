@@ -95,6 +95,9 @@
   --glass-border: rgba(0, 0, 0, 0.1);
   --glass-text: #3e2723;
   --glass-hover: rgba(0, 0, 0, 0.1);
+
+  --text-primary: #3e2723;
+  --text-secondary: rgba(62, 39, 35, 0.7);
 }
 
 /* ── Reset ── */

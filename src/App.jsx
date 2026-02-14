@@ -30,7 +30,8 @@ function AppContent() {
       <div style={{
         position: 'fixed', inset: 0, zIndex: 0,
         overflow: 'hidden',
-        opacity: (scene === 'unlock' || scene === 'letter') ? 1 : 0,
+        // Show tree ONLY on letter scene as requested.
+        opacity: (scene === 'letter') ? 1 : 0,
         transition: 'opacity 1s ease',
         pointerEvents: 'none',
       }}>
@@ -52,8 +53,8 @@ function AppContent() {
       {/* Three.js animated overlay (transparent canvas) */}
       <StarfieldBackground scene={scene} theme={theme} />
 
-      {/* Japanese-style ambient background — visible during game scenes */}
-      {['gameSelect', 'starMemory', 'cometTrace', 'lanternCatch'].includes(scene) && <GameBackground />}
+      {/* Japanese-style ambient background — visible during game scenes */}{/* REMOVED per user request for "old website" */}
+      {/* {['gameSelect', 'starMemory', 'cometTrace', 'lanternCatch'].includes(scene) && <GameBackground />} */}
 
       {/* Scene content */}
       {scene === 'landing' && <LandingScene onBegin={handleBegin} />}

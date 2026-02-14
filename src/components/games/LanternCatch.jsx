@@ -191,6 +191,9 @@ export default function LanternCatch({ onWin }) {
                             border: '1px solid rgba(255,138,101,0.3)',
                             borderRadius: '10px', cursor: 'pointer',
                             backdropFilter: 'blur(8px)',
+                            color: 'var(--text-primary)',
+                            border: '1px solid var(--glass-border)',
+                            background: 'var(--glass-bg)',
                         }}>Start</button>
                     </div>
                 )}
@@ -215,9 +218,9 @@ export default function LanternCatch({ onWin }) {
                         }}>Time's up! Found {hearts} / {HEARTS_TO_WIN} hearts</p>
                         <button onClick={startGame} style={{
                             padding: '10px 28px', fontFamily: "'Inter', sans-serif",
-                            fontSize: '0.8rem', fontWeight: 500, color: '#f0edf6',
-                            background: 'rgba(255,255,255,0.08)',
-                            border: '1px solid rgba(255,255,255,0.15)',
+                            fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-primary)',
+                            background: 'var(--glass-bg)',
+                            border: '1px solid var(--glass-border)',
                             borderRadius: '8px', cursor: 'pointer', backdropFilter: 'blur(8px)',
                         }}>Try Again</button>
                     </div>

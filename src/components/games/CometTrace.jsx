@@ -341,8 +341,8 @@ export default function CometTrace({ onWin }) {
                 <button onClick={nextRound} style={{
                     marginTop: '20px', padding: '10px 28px',
                     fontFamily: "'Inter', sans-serif", fontSize: '0.8rem', fontWeight: 500,
-                    color: '#f0edf6', background: 'rgba(255,255,255,0.08)',
-                    border: '1px solid rgba(255,255,255,0.15)',
+                    color: 'var(--text-primary)', background: 'var(--glass-bg)',
+                    border: '1px solid var(--glass-border)',
                     borderRadius: '8px', cursor: 'pointer', backdropFilter: 'blur(8px)', zIndex: 5,
                 }}>Next Comet →</button>
             )}
@@ -350,8 +350,8 @@ export default function CometTrace({ onWin }) {
                 <button onClick={() => { setRound(0); setAccuracies([]); setPhase('watching') }} style={{
                     marginTop: '20px', padding: '10px 28px',
                     fontFamily: "'Inter', sans-serif", fontSize: '0.8rem', fontWeight: 500,
-                    color: '#f0edf6', background: 'rgba(255,255,255,0.08)',
-                    border: '1px solid rgba(255,255,255,0.15)',
+                    color: 'var(--text-primary)', background: 'var(--glass-bg)',
+                    border: '1px solid var(--glass-border)',
                     borderRadius: '8px', cursor: 'pointer', backdropFilter: 'blur(8px)', zIndex: 5,
                 }}>Try Again (need {WIN_ACCURACY}% avg)</button>
             )}

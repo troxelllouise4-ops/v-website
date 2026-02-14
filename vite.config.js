@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-export default defineConfig({
-  base: '/v-website/',
+export default defineConfig(({ mode }) => ({
+  base: mode === 'production' ? '/v-website/' : '/',
   plugins: [react(), tailwindcss()],
-})
+}))
