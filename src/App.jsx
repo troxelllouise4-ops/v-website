@@ -14,6 +14,7 @@ import useAudio from './hooks/useAudio'
 
 function AppContent() {
   // landing | gameSelect | starMemory | cometTrace | lanternCatch | unlock | letter
+  console.log("Version: Visuals Restored (Date: 2026-02-14)") // Debug log to confirm deployment
   const [scene, setScene] = useState('landing')
   const { isPlaying, toggle } = useAudio('/music.mp3')
   const { theme } = useTheme()
