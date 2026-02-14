@@ -14,9 +14,9 @@ import useAudio from './hooks/useAudio'
 
 function AppContent() {
   // landing | gameSelect | starMemory | cometTrace | lanternCatch | unlock | letter
-  console.log("Version: Visuals Restored (Date: 2026-02-14)") // Debug log to confirm deployment
+  console.log("Version: Visuals Restored + Fixed Paths (Date: 2026-02-14)") // Debug log to confirm deployment
   const [scene, setScene] = useState('landing')
-  const { isPlaying, toggle } = useAudio('/music.mp3')
+  const { isPlaying, toggle } = useAudio('music.mp3')
   const { theme } = useTheme()
 
   const handleBegin = useCallback(() => setScene('gameSelect'), [])
@@ -37,7 +37,7 @@ function AppContent() {
         pointerEvents: 'none',
       }}>
         <img
-          src={theme === 'dark' ? '/images/tree-dark.svg' : '/images/tree.svg'}
+          src={theme === 'dark' ? 'images/tree-dark.svg' : 'images/tree.svg'}
           alt=""
           aria-hidden="true"
           style={{

@@ -180,7 +180,7 @@ export default function LandingScene({ onBegin }) {
 
                 {/* The image itself */}
                 <img
-                    src="/images/landing-bg.jpeg"
+                    src="images/landing-bg.jpeg"
                     alt="A twilight scene — two silhouettes under a starlit sky"
                     style={{
                         display: 'block',
