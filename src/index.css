@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+/* ── Shinkai Twilight Design Tokens ── */
+:root {
+  --deep-navy: #0a0e27;
+  --dark-indigo: #12183a;
+  --midnight-purple: #1a1245;
+  --twilight-violet: #2d1b4e;
+  --rich-purple: #432874;
+  --sakura-pink: #ffb3d9;
+  --sakura-deep: #e991bf;
+  --sakura-light: #ffd6ec;
+  --sakura-petal: #ffc4e0;
+  --heart-red: #ff4d6d;
+  --heart-pink: #ff758f;
+  --comet-cyan: #4dd0e1;
+  --star-white: #e8eaf6;
+  --warm-gold: #ffb74d;
+  --paper-cream: #f5f0e1;
+  --paper-edge: #e8dcc8;
+  --text-primary: #e8eaf6;
+  --text-secondary: rgba(232, 234, 246, 0.7);
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.15);
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-script: 'Dancing Script', cursive;
+}
+
+/* ── Reset ── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--deep-navy);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Snowfall ── */
+.snowflake {
+  position: fixed;
+  top: -10px;
+  color: white;
+  font-size: 1em;
+  animation: snowfall linear infinite;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes snowfall {
+  0% {
+    transform: translateY(-10px) rotate(0deg) translateX(0px);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(100vh) rotate(360deg) translateX(60px);
+    opacity: 0;
+  }
+}
+
+/* ── Heart Float ── */
+@keyframes heartFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* ── Petal Fall ── */
+@keyframes petalFall {
+  0% {
+    transform: translateY(-20px) rotate(0deg) translateX(0px);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(105vh) rotate(720deg) translateX(var(--drift, 40px));
+    opacity: 0;
+  }
+}
+
+/* ── Star Twinkle ── */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* ── Gentle Pulse ── */
+@keyframes gentlePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+/* ── Letter Glow ── */
+@keyframes letterGlow {
+  0%, 100% {
+    text-shadow: 0 0 20px rgba(255, 179, 217, 0.4), 0 0 40px rgba(255, 179, 217, 0.2);
+  }
+  50% {
+    text-shadow: 0 0 30px rgba(255, 179, 217, 0.6), 0 0 60px rgba(255, 179, 217, 0.3);
+  }
+}
+
+/* ── Glass Morphism ── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+}
+
+/* ── Vignette ── */
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 8;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(10, 14, 39, 0.6) 100%);
+}
+
+/* ── Scrollbar hide ── */
+::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; }
